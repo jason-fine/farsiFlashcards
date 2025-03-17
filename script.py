@@ -3,10 +3,10 @@ from google_images_search import GoogleImagesSearch
 from googletrans import Translator
 from docx import Document
 from urllib.request import urlretrieve
+import apikey
 
-# Initialize Google Images Search API
-api_key = 'AIzaSyAnAN4IOnTOQHZPYYgrV9m3zmID3vwmOKI'
-cse_id = 'f437c601338944ff0'
+api_key = apikey.api_key
+cse_id = apikey.cse_id
 
 gis = GoogleImagesSearch(api_key, cse_id)
 
