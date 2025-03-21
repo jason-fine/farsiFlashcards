@@ -6,8 +6,11 @@ from google_images_search import GoogleImagesSearch
 import apikey  # Ensure you have a separate `apikey.py` file with API keys
 
 # API Credentials
-API_KEY = apikey.api_key
-CSE_ID = apikey.cse_id
+try:
+    API_KEY = apikey.api_key
+    CSE_ID = apikey.cse_id
+except AttributeError:
+    raise ValueError("API keys not found in apikey.py. Ensure api_key and cse_id are defined.")
 
 # Initialize Google Images Search
 gis = GoogleImagesSearch(API_KEY, CSE_ID)
@@ -19,32 +22,40 @@ os.makedirs(IMAGE_FOLDER, exist_ok=True)
 # Fixed image size
 IMAGE_SIZE = (300, 300)
 
+
 def search_and_download_image(word, max_attempts=5):
     """Searches for an image and tries up to max_attempts to find a valid one."""
+    image_path = os.path.join(IMAGE_FOLDER, f"{word}.jpg")
+
+    # Skip download if the image already exists
+    if os.path.exists(image_path):
+        print(f"Image already exists for {word}. Skipping download.")
+        return image_path
+
     gis.search({'q': word, 'num': max_attempts})
 
     for i, result in enumerate(gis.results()):
         try:
             image_url = result.url
-            image_path = os.path.join(IMAGE_FOLDER, f"{word}.jpg")
 
             # Download the image
             urlretrieve(image_url, image_path)
-            print(f"Downloaded image {i+1} for {word}: {image_path}")
+            print(f"Downloaded image {i + 1} for {word}: {image_path}")
 
-            # Open and resize the image
+            # Open, resize, and save the image
             with Image.open(image_path) as img:
-                img = img.convert("RGB")  # Ensure it's a valid image
+                img = img.convert("RGB")
                 img = img.resize(IMAGE_SIZE)
                 img.save(image_path)
                 print(f"Resized and saved: {image_path}")
                 return image_path
 
-        except (UnidentifiedImageError, OSError) as e:
-            print(f"Invalid image for {word}, trying next...")
+        except (UnidentifiedImageError, OSError):
+            print(f"Invalid image for {word}. Trying next...")
 
     print(f"Failed to get a valid image for {word}")
     return None
+
 
 # Example list of categories with words
 categories = [
@@ -108,6 +119,7 @@ categories = [
                     "dirty", "strong", "weak", "dead", "alive", "heavy", "light", "dark", "light", "nuclear", "famous"]),
     ("Pronouns", ["I", "you", "he", "she", "it", "we", "you", "they"])
 ]
+
 
 # Process each category
 for category, words in categories:
