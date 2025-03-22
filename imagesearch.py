@@ -32,7 +32,8 @@ def search_and_download_image(word, max_attempts=5):
         print(f"Image already exists for {word}. Skipping download.")
         return image_path
 
-    gis.search({'q': word, 'num': max_attempts})
+    query = f"{word} {category}"
+    gis.search({'q': query, 'num': max_attempts})
 
     for i, result in enumerate(gis.results()):
         try:
