@@ -32,7 +32,7 @@ def search_and_download_image(word, max_attempts=5):
         print(f"Image already exists for {word}. Skipping download.")
         return image_path
 
-    query = f"{word} {category} beautiful"
+    query = f"{word} {category}"
     gis.search({'q': query, 'num': max_attempts})
 
     for i, result in enumerate(gis.results()):
@@ -42,6 +42,7 @@ def search_and_download_image(word, max_attempts=5):
             # Download the image
             urlretrieve(image_url, image_path)
             print(f"Downloaded image {i + 1} for {word}: {image_path}")
+            time.sleep(1)  # Avoid API rate limits
 
             # Open, resize, and save the image
             with Image.open(image_path) as img:
@@ -128,4 +129,4 @@ for category, words in categories:
     for word in words:
         print(f"  Processing word: {word}")
         search_and_download_image(word)
-        time.sleep(1)  # Avoid API rate limits
+        
