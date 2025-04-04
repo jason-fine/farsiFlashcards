@@ -23,7 +23,7 @@ os.makedirs(IMAGE_FOLDER, exist_ok=True)
 IMAGE_SIZE = (300, 300)
 
 
-def search_and_download_image(word, max_attempts=5):
+def search_and_download_image(word, category, max_attempts=5):
     """Searches for an image and tries up to max_attempts to find a valid one."""
     image_path = os.path.join(IMAGE_FOLDER, f"{word}.jpg")
 
@@ -32,7 +32,7 @@ def search_and_download_image(word, max_attempts=5):
         print(f"Image already exists for {word}. Skipping download.")
         return image_path
 
-    query = f"{word} {category} number"
+    query = f"teaching illustration of {word}"
     gis.search({'q': query, 'num': max_attempts})
 
     for i, result in enumerate(gis.results()):
@@ -128,5 +128,5 @@ for category, words in categories:
     print(f"Processing category: {category}")
     for word in words:
         print(f"  Processing word: {word}")
-        search_and_download_image(word)
+        search_and_download_image(word, category)
         
