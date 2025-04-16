@@ -47,4 +47,4 @@ for _, row in df.iterrows():
 with open("output.html", "w", encoding="utf-8") as f:
     f.write(html_output)
 
-print("✅ HTML written to output.html")
+print("✅ HTML written in output.html")
